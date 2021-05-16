@@ -1,34 +1,29 @@
 import pygame
 from Constants import *
-from GuiElements import Text
+from GuiElements import Text, Button1
 from MenuElements import *
 
 
 # Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрыти
-class Window:
+class TextWindow:
     def __init__(self):
 
         # Открыто ли окно
         self.opened = False
-        # Тескт, который нужно вывести
-        self.text_size = int(26 * SCREEN_HEIGHT // 1080)
-        with open('data/rules.txt', encoding='utf8') as rules:
-            self.text = rules.read()
+
+        # Текст
+        self.text = ''
 
         # Рамка окна
         self.frame = BigFrame()
         self.frame.align_center()
 
         # Кнопка закрытия
-        self.button = Button()
+        self.button = Button1('Закрыть')
         self.button.align_center()
-        self.button.y += self.frame.image.get_height() // 2 - self.button.image.get_height()
+        self.button.set_pos(self.button.frame.x,
+                            self.frame.image.get_height() - self.button.frame.image.get_height())
         self.button.func = self.close
-
-        # Текст
-        self.button_text = Text('Ок', size=50)
-        self.button_text.align_center()
-        self.button_text.y += self.frame.image.get_height() // 2 - self.button.image.get_height()
 
         self.func = lambda: None  # Функция, которую можно привязать к кнопке закрытия
 
@@ -39,15 +34,17 @@ class Window:
         if self.opened:
             self.frame.render(screen)
             self.button.render(screen)
-            self.render_text(self.text, (self.frame.x + 150, self.frame.y + 100),
-                             pygame.font.Font(None, self.text_size), screen)
-            self.button_text.render(screen)
+            self.render_text(self.text, [self.frame.x, self.frame.y],
+                             pygame.font.Font(None, int(24 * SCALE)), screen)
 
     # Отрисовка многострочного текста
     def render_text(self, text, pos, font, screen, color=pygame.Color('grey')):
         lines = [line.split() for line in text.splitlines()]
+        margin = int(self.frame.image.get_width() * 0.1)
         space = font.size(' ')[0]
-        right_bound = self.frame.x + self.frame.image.get_width() - 150
+        right_bound = self.frame.x + self.frame.image.get_width() - margin * 1.1
+        pos[0] += margin
+        pos[1] += margin
         x, y = pos
         for line in lines:
             for word in line:
@@ -66,6 +63,9 @@ class Window:
     # Функция открытия
     def open(self):
         self.opened = True
+
+    def set_text(self, text):
+        self.text = text
 
     # Функция закрытия, привязана к кнопке
     def close(self):

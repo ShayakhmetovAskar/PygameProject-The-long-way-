@@ -2,7 +2,7 @@ import os
 from Constants import *
 from MapBase import Map
 from Entity import *
-from InfoWindow import Window
+from TextWindow import TextWindow
 import pygame
 
 

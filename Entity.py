@@ -185,6 +185,7 @@ class Fire(Entity):
         if self.counter >= self.freq:
             self.counter = 0
 
+
     # Добавление времени горения
     def add_time(self, time):
         if self.time == 0:

@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 from Constants import *
 from Entity import *
-from InfoWindow import Window
+from TextWindow import TextWindow
 import pygame
 
 
@@ -169,6 +169,7 @@ class Map:
     @abstractmethod
     def tile_clicked(self, tile_pos, tile_id):
         pass
+
 
     def exit(self):
         pygame.quit()

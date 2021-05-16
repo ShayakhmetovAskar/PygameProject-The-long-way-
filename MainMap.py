@@ -1,26 +1,57 @@
 import os
 from Constants import *
+from GuiElements import SmallButton, Button1, Text, Frame2, Frame1
 from MapBase import Map
 from Entity import *
-from InfoWindow import Window
+from TextWindow import TextWindow
 import pygame
+
+from MapWindow import MapWindow
 
 
 class MainMap(Map):
 
     def __init__(self, name, map_loader):
         super().__init__(name, map_loader)
-
         # Горизотальное и вертикальное смещение камеры (в декартовой системе координат)
         self.ofx = -258 * TILE_SIZE
         self.ofy = -300 * TILE_SIZE
+
+        self.paused = False
 
         # Игрок
         self.player = Player(291 * TILE_SIZE, 331 * TILE_SIZE, 2)
 
         # Окно с текстом
-        self.info_window = Window()
-        self.info_window.opened = False
+        self.text_window = TextWindow()
+        self.text_window.opened = False
+        self.text_window.set_text('')
+
+        # Окно с картой
+        self.map_window = MapWindow('test.png')
+        self.map_window.opened = False
+
+        # Кнопка паузы
+        self.btn_pause = SmallButton('ButtonPause', 'ButtonPauseHover', 'ButtonPausePressed')
+        self.btn_pause.set_pos(SCREEN_WIDTH - int(self.btn_pause.frame.image.get_width() * 1.2),
+                               int(self.btn_pause.frame.image.get_height() * 0.2))
+        self.btn_pause.func = lambda: setattr(self, 'paused', True)
+
+        # Кнопка карты
+        self.btn_map = SmallButton('ButtonMap', 'ButtonMapHover', 'ButtonMapPressed')
+        self.btn_map.set_pos(SCREEN_WIDTH - int(self.btn_map.frame.image.get_width() * 1.2),
+                             int(
+                                 self.btn_map.frame.image.get_height() * 0.2) + self.btn_pause.frame.image.get_height())
+        self.btn_map.func = lambda: self.map_window.open()
+
+        # Кнопка окна с текстом
+        self.btn_text_window = SmallButton('ButtonTextWindow', 'ButtonTextWindowHover',
+                                           'ButtonTextPressed')
+        self.btn_text_window.set_pos(
+            SCREEN_WIDTH - int(self.btn_text_window.frame.image.get_width() * 1.2),
+            int(
+                self.btn_map.frame.image.get_height() * 0.2) + self.btn_map.frame.image.get_height() + self.btn_pause.frame.image.get_height())
+        self.btn_text_window.func = lambda: self.text_window.open()
 
     def set_object(self, tile_id, x, y, z):
         # Если клетка костер - прикрепляем к нему объект огня
@@ -115,8 +146,20 @@ class MainMap(Map):
         else:
             self.player.walking = False
 
+    def render(self, screen: Surface):
+        super().render(screen)
+        self.btn_map.render(screen)
+        self.btn_text_window.render(screen)
+        self.btn_pause.render(screen)
+        if self.map_window.opened:
+            self.map_window.render(screen)
+        if self.text_window.opened:
+            self.text_window.render(screen)
+
     def update(self, screen):
 
+        if self.paused:
+            self.pause(screen)
         # Получение координат курсора
         m_pos = pygame.mouse.get_pos()
 
@@ -132,7 +175,6 @@ class MainMap(Map):
                 if obj.time > 0:
                     fire_dist = min(fire_dist, self.nearness(self.player.x, self.player.y, obj.x - 3,
                                                              obj.y - 16))
-
                 # Обновление костра (Анимация, Уменьшение времени горения)
                 obj.update()
 
@@ -157,8 +199,11 @@ class MainMap(Map):
         else:
             pygame.mixer.Channel(2).set_volume(0)
 
-        # Обновление параметров игрока
+        # Обновление параметров
         self.update_player()
+        self.btn_map.update()
+        self.btn_text_window.update()
+        self.btn_pause.update()
         # Движение камеры
         self.move_camera()
 
@@ -202,10 +247,64 @@ class MainMap(Map):
         # Лодка
         elif tile_id in [296, 297, 298]:
             if self.player.parts >= 7:
-                self.info_window.text_size = 60
+                self.text_window.text_size = 60
                 with open('data/ending.txt', encoding='utf8') as file:
                     text = file.read()
-                self.info_window.text = text
-                self.info_window.button_text.set_text('Выйти из игры')
-                self.info_window.button.func = self.exit
-                self.info_window.open()
+                self.text_window.text = text
+                self.text_window.button_text.set_text('Выйти из игры')
+                self.text_window.button.func = self.exit
+                self.text_window.open()
+
+    def pause(self, screen: Surface):
+        background = screen.copy()
+        clock = pygame.time.Clock()
+        # Рамки, интерфейса и их выравнивание
+        frame1 = Frame1()
+        frame1.align_center()
+        frame2 = Frame2()
+        frame2.align_center()
+        frame1.y += frame2.image.get_height() // 2
+        frame2.y -= frame1.image.get_height() // 2
+
+        text_frame1_title = Text(text='Пауза', size=100)
+        text_frame1_title.align_center()
+        text_frame1_title.y -= frame1.image.get_height() // 2
+
+        button_continue = Button1('Продолжить')
+        button_continue.align_center()
+        button_continue.set_pos(
+            button_continue.frame.x,
+            frame1.y + frame1.image.get_height() // 6
+        )
+        button_continue.func = lambda: setattr(self, 'paused', False)
+
+        button_exit = Button1()
+        button_exit.set_text('Выйти (прогресс будет утерян)', size=25)
+        button_exit.align_center()
+        button_exit.set_pos(
+            button_exit.frame.x,
+            frame1.y + frame1.image.get_height() * 9 // 10 - button_exit.frame.image.get_height() - button_exit.frame.image.get_height()
+        )
+        button_exit.func = quit
+        # Затемнение фона
+        s = pygame.Surface(screen.get_size())
+        s.set_alpha(128)
+        s.fill((0, 0, 0))
+        while self.paused:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            screen.blit(background, (0, 0))
+            screen.blit(s, (0, 0))
+            button_continue.update()
+            button_exit.update()
+            frame1.render(screen)
+            frame2.render(screen)
+            text_frame1_title.render(screen)
+            button_continue.render(screen)
+            button_exit.render(screen)
+            # Отрисовка курсора
+            if pygame.mouse.get_focused():
+                screen.blit(pointer, (pygame.mouse.get_pos()))
+            pygame.display.update()
+            clock.tick(FPS)

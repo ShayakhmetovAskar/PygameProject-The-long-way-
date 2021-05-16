@@ -40,20 +40,17 @@ def main():
     # Панель состояния игрока
     heath_hud = HealthHUD(level.player)
 
-    # Кнопка помощи
-    help_button = HelpButton()
-    help_button.x = screen.get_width() - 100
-    help_button.y = 50
-    help_button.func = level.info_window.open
+    # # Кнопка помощи
+    # help_button = HelpButton()
+    # help_button.x = screen.get_width() - 100
+    # help_button.y = 50
+    # help_button.func = level.info_window.open
+
+
 
     # Открываем окно помощи
-    level.info_window.open()
+    level.text_window.open()
 
-    # Делаем костер около игрока вечно горящим, до тех пор, пока не пользователь не закроет окно
-    # с инструкциями
-    level.objects[(294, 332)].time = 500
-    level.objects[(294, 332)].endless = True
-    level.info_window.func = lambda: setattr(level.objects[(294, 332)], 'endless', False)
 
     # Немного усиливаем звук ветра
     pygame.mixer.Channel(0).set_volume(0.2)
@@ -61,6 +58,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
     while running:
+        start = time.time()
         # Если здоровье падает до нуля, перезапускаем игру
         if level.player.health <= 0:
             return True
@@ -72,19 +70,17 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     level.click_listener(event.pos)
-        help_button.update()
 
         # Отрисовка элементов
-        screen.fill((0, 0, 0))
         level.update(screen)
         heath_hud.render(screen)
-        help_button.render(screen)
         screen.blit(compass, (SCREEN_WIDTH - compass.get_width(), SCREEN_HEIGHT - compass.get_height()))
 
         #  Убираем курсор если окно не в фокусе
         if pygame.mouse.get_focused():
             screen.blit(pointer, (pygame.mouse.get_pos()))
         pygame.display.update()
+        print(1 / (time.time() - start))
         clock.tick(FPS)
 
 
