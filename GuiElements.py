@@ -1,6 +1,52 @@
 from Constants import *
 
 
+class HealthHUD:
+    def __init__(self, player):
+        self.player = player
+
+        # Белая полупрозрачная рамка
+        self.frame = pygame.Surface((SCREEN_WIDTH // 5, SCREEN_HEIGHT // 5))
+        self.frame.set_alpha(150)
+        self.frame.fill((255, 255, 255))
+
+        # Полоса здоровья
+        self.health_frame = pygame.transform.scale(load_image('hud\\Healthbar.png'),
+                                                   (SCREEN_WIDTH // 6, SCREEN_WIDTH // 24))
+        self.health_scale = pygame.transform.scale(load_image('hud\\Healthbar scale.png'),
+                                                   (SCREEN_WIDTH // 6, SCREEN_WIDTH // 24))
+
+        # Полоса теплоты
+        self.thermometer_frame = pygame.transform.scale(load_image('hud\\thermometer frame.png'),
+                                                        (SCREEN_WIDTH // 6,
+                                                         int(SCREEN_WIDTH // 45.75)))
+        self.thermometer_scale = pygame.transform.scale(load_image('hud\\thermometer scale.png'),
+                                                        (SCREEN_WIDTH // 6,
+                                                         int(SCREEN_WIDTH // 45.75)))
+
+    def render(self, screen):
+        screen.blit(self.frame, (0, 0))
+        screen.blit(self.health_frame, (SCREEN_WIDTH // 60, SCREEN_HEIGHT // 70))
+
+        health_width = int(self.player.health / 100 * self.health_scale.get_width() * 0.75 +
+                           0.25 * self.health_scale.get_width())
+        screen.blit(self.health_scale, (SCREEN_WIDTH // 60, SCREEN_HEIGHT // 70),
+                    (0, 0, health_width, self.health_scale.get_height()))
+
+        temp_width = int(self.player.temperature / 100 * self.thermometer_scale.get_width())
+        screen.blit(self.thermometer_frame, (
+        SCREEN_WIDTH // 60, SCREEN_HEIGHT // 70 + int(self.health_frame.get_height() * 1.25)))
+        screen.blit(self.thermometer_scale, (
+        SCREEN_WIDTH // 60, SCREEN_HEIGHT // 70 + int(self.health_frame.get_height() * 1.25)),
+                    (0, 0, temp_width, self.thermometer_scale.get_height()))
+
+
+class InventoryHud:
+    def __init__(self, player):
+        self.player = player
+
+        
+
 # Отображение показателей на экране
 class HUD:
     def __init__(self, player):

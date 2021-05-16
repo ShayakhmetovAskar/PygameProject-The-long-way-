@@ -21,7 +21,7 @@ def main():
     pygame.mixer.Channel(2).set_volume(0)
     pygame.mixer.Channel(2).play(pygame.mixer.Sound('data/sounds/step.wav'), -1)
     pygame.mixer.Channel(3).set_volume(0.3)
-    pygame.mixer.Channel(3).play(pygame.mixer.Sound('data/sounds/background.mp3'), -1)
+    pygame.mixer.Channel(3).play(pygame.mixer.Sound('data/sounds/background.wav'), -1)
     screen = pygame.display.set_mode(SCREEN_SIZE, (pygame.FULLSCREEN | pygame.DOUBLEBUF))
 
     # Убираем курсор, так как есть свой
@@ -40,6 +40,7 @@ def main():
 
     # Панель состояния игрока
     hud = HUD(level.player)
+    heath_hud = HealthHUD(level.player)
 
     # Кнопка помощи
     help_button = HelpButton()
@@ -62,6 +63,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
     while running:
+        start = time.time()
         # Если здоровье падает до нуля, перезапускаем игру
         if level.player.health <= 0:
             main()
@@ -73,14 +75,16 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     level.click_tile(event.pos)
+            # do other stuff
         help_button.update()
 
         # Отрисовка элементов
         screen.fill((0, 0, 0))
         level.update(screen)
-        hud.render(screen)
+        #hud.render(screen)
+        heath_hud.render(screen)
         help_button.render(screen)
-        screen.blit(compass, (0, 0))
+        screen.blit(compass, (SCREEN_WIDTH - compass.get_width(), SCREEN_HEIGHT - compass.get_height()))
 
         #  Убираем курсор если окно не в фокусе
         if pygame.mouse.get_focused():

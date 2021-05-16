@@ -10,7 +10,7 @@ class Window:
         # Открыто ли окно
         self.opened = False
         # Тескт, который нужно вывести
-        self.text_size = 28
+        self.text_size = int(26 * SCREEN_HEIGHT // 1080)
         with open('data/rules.txt', encoding='utf8') as rules:
             self.text = rules.read()
 

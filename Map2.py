@@ -79,14 +79,15 @@ class Map:
         # Холст с разшением (RENDER_WIDTH, RENDER_HEIGHT)
         # Для рендера в пониженном разрешение (увеличивает производительность)
         tmp = pygame.Surface(RENDER_SIZE)
-
         # Отрисовка начинается с нижних слоев
         for z in range(self.layers):
             # Далее отрисовываются только видимые тайлы
-            for y in range(max(0, -self.ofy // TILE_SIZE - 7),
-                           min(self.width - 1, (RENDER_HEIGHT - self.ofy) // TILE_SIZE + 2)):
-                for x in range(max(0, -self.ofx // TILE_SIZE - 1),
-                               min(self.height - 1, (RENDER_WIDTH - self.ofx) // TILE_SIZE + 2)):
+            for y in range(max(0, -self.ofy // TILE_SIZE - (
+                    self.tile_pos((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))[1] -
+                    self.tile_pos((SCREEN_WIDTH, 0))[1]) - 4),
+                           min(self.width - 1, (RENDER_HEIGHT - self.ofy) // TILE_SIZE + 4)):
+                for x in range(max(0, -self.ofx // TILE_SIZE - 4),
+                               min(self.height - 1, (RENDER_WIDTH - self.ofx) // TILE_SIZE + 4)):
                     if (x, y, z) == self.player.tile_coods():
                         self.player.render(tmp, (self.player.x + self.ofx, self.player.y + self.ofy))
 
@@ -97,6 +98,11 @@ class Map:
                     if tile_id != 0 and tile_id != 448:
                         # Изометрические коордаты для отрисовки на экране
                         coords = to_isometric(x * TILE_SIZE + self.ofx, y * TILE_SIZE + self.ofy)
+                        if coords[0] + 2 * TILE_SIZE < 0 or coords[
+                            0] - 2 * TILE_SIZE > SCREEN_WIDTH or \
+                                coords[1] + 2 * TILE_SIZE < 0 or coords[
+                            1] - 2 * TILE_SIZE > SCREEN_HEIGHT:
+                            continue
 
                         # Отрисовка текстуры
                         tmp.blit(self.textures[self.map[z][y][x]], coords)
@@ -124,7 +130,10 @@ class Map:
 
         # Смещение по горизонтали и вертикали и скорость
         dx, dy = 0, 0
+
         speed = 2
+        if pygame.key.get_pressed()[pygame.K_m]:
+            speed = 20
 
         if pygame.key.get_pressed()[pygame.K_w]:
             dy = -speed
