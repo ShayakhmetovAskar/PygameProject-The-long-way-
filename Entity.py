@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from Constants import *
 from pygame import Surface, transform
 
@@ -29,6 +31,10 @@ class Entity:
         self.x = x
         self.y = y
         self.z = z
+
+    @abstractmethod
+    def update(self):
+        pass
 
 
 # Класс персонажа

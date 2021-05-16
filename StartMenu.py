@@ -1,6 +1,8 @@
 from math import sin, cos, pi
 
-from Map2 import *
+from Entity import Fire
+from GuiElements import Button1, Text
+from MenuMap import MenuMap
 from MapLoader import MapLoader
 from MenuElements import *
 
@@ -16,7 +18,7 @@ class StartMenu:
         self.Ry = 30  # Радиус по вертикали
 
         # Для стартового окна есть отдельная карта
-        self.level = Map('start_menu.tmx', MapLoader())
+        self.level = MenuMap('start_menu.tmx', MapLoader())
 
         # Бесконечный костер
         for fire in self.level.objects.values():
@@ -36,41 +38,23 @@ class StartMenu:
         self.frame2.y -= self.frame1.image.get_height() // 2
 
         # Название игры
-        self.text_frame1_title = Text('The long way', 100)
+        self.text_frame1_title = Text(text='The long way', size=100)
         self.text_frame1_title.align_center()
         self.text_frame1_title.y -= self.frame1.image.get_height() // 2
 
-        # Кнопка "Начать игру"
-        self.button_start = Button()
+        self.button_start = Button1('Начать игру')
         self.button_start.align_center()
-        self.button_start.y = self.frame1.y + self.frame1.image.get_height() // 6
-        self.text_start = Text('Начать игру', 60)
-        self.text_start.align_center()
-        self.text_start.y = \
-            self.frame1.y + self.frame1.image.get_height() // 6 + \
-            self.button_start.image.get_height() // 3
-        self.text_start_pressed = Text('Начать игру', 55)
-        self.text_start_pressed.align_center()
-        self.text_start_pressed.y = \
-            self.frame1.y + self.frame1.image.get_height() // 6 + \
-            self.button_start.image.get_height() // 3
+        self.button_start.set_pos(
+            self.button_start.frame.x,
+            self.frame1.y + self.frame1.image.get_height() // 6
+        )
 
-        # Кнопка "Выйти"
-        self.button_exit = Button()
+        self.button_exit = Button1('Выйти')
         self.button_exit.align_center()
-        self.button_exit.y = \
-            self.frame1.y + self.frame1.image.get_height() * 9 // 10 - \
-            self.button_exit.image.get_height()
-        self.text_quit = Text('Выйти', 60)
-        self.text_quit.align_center()
-        self.text_quit.y = \
-            self.frame1.y + self.frame1.image.get_height() * 9 // 10 + \
-            self.button_exit.image.get_height() // 3 - self.button_exit.image.get_height()
-        self.text_quit_pressed = Text('Выйти', 55)
-        self.text_quit_pressed.align_center()
-        self.text_quit_pressed.y = \
-            self.frame1.y + self.frame1.image.get_height() * 9 // 10 + \
-            self.button_exit.image.get_height() // 3 - self.button_exit.image.get_height()
+        self.button_exit.set_pos(
+            self.button_exit.frame.x,
+            self.frame1.y + self.frame1.image.get_height() * 9 // 10 - self.button_exit.frame.image.get_height() - self.button_exit.frame.image.get_height()
+        )
 
         # Установка действий на кнопки
         self.button_exit.func = self.exit
@@ -110,17 +94,6 @@ class StartMenu:
             self.text_frame1_title.render(screen)
             self.button_start.render(screen)
             self.button_exit.render(screen)
-
-            # Уменьшение текста при нажатии на кнопку
-            if self.button_start.pressed:
-                self.text_start_pressed.render(screen)
-            else:
-                self.text_start.render(screen)
-
-            if self.button_exit.pressed:
-                self.text_quit_pressed.render(screen)
-            else:
-                self.text_quit.render(screen)
 
             # Отрисовка курсора
             if pygame.mouse.get_focused():

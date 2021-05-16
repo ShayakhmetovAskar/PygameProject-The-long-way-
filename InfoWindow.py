@@ -1,5 +1,6 @@
 import pygame
 from Constants import *
+from GuiElements import Text
 from MenuElements import *
 
 

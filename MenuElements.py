@@ -97,20 +97,3 @@ class HelpButton(Button):
         self.image_selected = images['ButtonHelp']
         self.image_pressed = images['ButtonHelp']
 
-
-# Текст
-class Text(MenuObject):
-    def __init__(self, text, size=16, x=0, y=0):
-        self.x = x
-        self.y = y
-        self.text = text
-        self.font = pygame.font.SysFont('', size)
-        surface = self.font.render(self.text, True, (210, 125, 44))
-        super().__init__(surface, x, y)
-
-    def set_text(self, text):
-        self.text = text
-        self.image = self.font.render(self.text, True, (210, 125, 44))
-        y_ = self.y
-        self.align_center()
-        self.y = y_

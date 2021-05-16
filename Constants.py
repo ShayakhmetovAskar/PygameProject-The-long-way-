@@ -3,15 +3,17 @@ import sys
 
 import pygame
 
+pygame.init()
 # Размеры экрана
-SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 480, 270
+SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+SCALE = SCREEN_WIDTH / 1920
+pygame.quit()
 # Размер одной клетки в декартовой система
 TILE_SIZE = 32
 # Директории
 MAPS_DIR = 'data/maps'
 IMAGES_DIR = 'data/images'
 # Разрешение отрисовки
-#RENDER_SIZE = RENDER_WIDTH, RENDER_HEIGHT = (1920, 1080)
 RENDER_SIZE = RENDER_WIDTH, RENDER_HEIGHT = (480, 270)
 # Частота обновлений кадров
 FPS = 30
