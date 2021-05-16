@@ -198,12 +198,14 @@ class Button1:
         self.image_pressed = images['ButtonPressed']
         self.image_hover = images['ButtonSelected']
         self.frame = MenuObject(self.image_def)
-        self.text = Text(text, size=50)
+        self.set_text(text)
         self.pressed = False
         self.func = lambda: None
 
     def set_text(self, text, size=50):
+        print(text)
         self.text = Text(text=text, size=size)
+        self.set_pos(self.frame.x, self.frame.y)
 
     def update(self):
         x_, y_ = pygame.mouse.get_pos()

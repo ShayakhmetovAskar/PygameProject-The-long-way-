@@ -1,7 +1,6 @@
 import pygame
 from Constants import *
-from GuiElements import Text, Button1
-from MenuElements import *
+from GuiElements import *
 
 
 # Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрыти

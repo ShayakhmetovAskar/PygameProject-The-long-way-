@@ -11,12 +11,13 @@ from MapWindow import MapWindow
 
 class MainMap(Map):
 
-    def __init__(self, name, map_loader):
+    def __init__(self, name, map_loader, screen):
         super().__init__(name, map_loader)
         # Горизотальное и вертикальное смещение камеры (в декартовой системе координат)
         self.ofx = -258 * TILE_SIZE
         self.ofy = -300 * TILE_SIZE
 
+        self.screen = screen
         self.paused = False
 
         # Игрок
@@ -25,7 +26,27 @@ class MainMap(Map):
         # Окно с текстом
         self.text_window = TextWindow()
         self.text_window.opened = False
-        self.text_window.set_text('')
+        self.text_window.set_text('''Если вы читаете этот документ, то у вас большие проблемы. Вы оказались на загадочном острове, откуда вам стоит поскорее выбраться. У вас только один способ сделать это – отремонтировать лодку и уплыть отсюда. Этот остров очень холодный, поэтому вам придется постоянно разжигать костры и греться.
+Если вы увидите дрова, можете просто их взять, они вам точно пригодятся (попробуйте подойти и просто тыкнуть). Вы ослабли от такого холода и, к сожалению, можете унести только 10 поленьев за раз. Чтобы разжечь костёр, приблизьтесь к нему, положите дрова, и грейтесь, пока он не потухнет.
+Остров очень большой, а значит ваш ждёт много веселья! Чтобы починить лодку, вам нужно собрать 7 деталей от неё. Все детали лежат в ящиках. Вот инструкция, как можно найти сами ящики:
+
+1. Первую деталь, правое весло, вы, возможно, уже нашли. Она находится рядом с местом, где вы проснулись.
+
+2. К северо-западу от места, где вы сейчас, на самом краю острова есть озеро, там вы найдете материалы для обшивки бортов. Пройдите на север по тропе до первой развилки, где поверните на восток.
+
+3. Ваша следующая цель – хижина в лесу – там вы найдете днище лодки. Сам лес стоит поискать к северу от развилки.
+
+4. Части от корпуса можно найти к северу от хижины. Это место называется “Заброшенное поселение”, не забудьте прихватить с собой дрова!
+
+5. К западу от хижины в лесу находится мост через реку, перейдя его вы найдете лагерь охотника. Если постараетесь, то найдете там инструменты для ремонта.
+
+6. Пробку для слива воды вам следует искать в заброшенном лагере. Для начала найдите стоянку для путников к юго-западу от лагеря охотника (реку переплывать не стоит, можно воспользоваться мостом). Ваша цель расположена к юго-востоку от стоянки
+
+7. Последняя деталь, левое весло, находится к северо-западу от стоянки путников. Эту деталь следует искать ближе к берегу, ходят слухи, что там есть рыбацкий палаточный городок
+
+Когда вы соберёте все детали от лодки (если выживите), можно смело уплывать отсюда, только нужно сначала найти саму лодку, ее прибило где-то вдоль берега около рыбацкого городка. Просто тыкните и дело с концом. Желаю вам удачи в поисках и не умереть на этом острове… главное не умереть…
+
+Всегда ходите по тропам - и никгода не заблудитесь.''')
 
         # Окно с картой
         self.map_window = MapWindow('test.png')
@@ -35,7 +56,7 @@ class MainMap(Map):
         self.btn_pause = SmallButton('ButtonPause', 'ButtonPauseHover', 'ButtonPausePressed')
         self.btn_pause.set_pos(SCREEN_WIDTH - int(self.btn_pause.frame.image.get_width() * 1.2),
                                int(self.btn_pause.frame.image.get_height() * 0.2))
-        self.btn_pause.func = lambda: setattr(self, 'paused', True)
+        self.btn_pause.func = self.pause
 
         # Кнопка карты
         self.btn_map = SmallButton('ButtonMap', 'ButtonMapHover', 'ButtonMapPressed')
@@ -157,9 +178,6 @@ class MainMap(Map):
             self.text_window.render(screen)
 
     def update(self, screen):
-
-        if self.paused:
-            self.pause(screen)
         # Получение координат курсора
         m_pos = pygame.mouse.get_pos()
 
@@ -246,17 +264,19 @@ class MainMap(Map):
 
         # Лодка
         elif tile_id in [296, 297, 298]:
-            if self.player.parts >= 7:
+            if self.player.parts >= 0:
                 self.text_window.text_size = 60
                 with open('data/ending.txt', encoding='utf8') as file:
                     text = file.read()
-                self.text_window.text = text
-                self.text_window.button_text.set_text('Выйти из игры')
+
+                self.text_window.set_text(text, size=48)
+                self.text_window.button.set_text('Выйти из игры')
                 self.text_window.button.func = self.exit
                 self.text_window.open()
 
-    def pause(self, screen: Surface):
-        background = screen.copy()
+    def pause(self):
+        self.paused = True
+        background = self.screen.copy()
         clock = pygame.time.Clock()
         # Рамки, интерфейса и их выравнивание
         frame1 = Frame1()
@@ -287,24 +307,27 @@ class MainMap(Map):
         )
         button_exit.func = quit
         # Затемнение фона
-        s = pygame.Surface(screen.get_size())
+        s = pygame.Surface(self.screen.get_size())
         s.set_alpha(128)
         s.fill((0, 0, 0))
         while self.paused:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-            screen.blit(background, (0, 0))
-            screen.blit(s, (0, 0))
+            self.screen.blit(background, (0, 0))
+            self.screen.blit(s, (0, 0))
             button_continue.update()
             button_exit.update()
-            frame1.render(screen)
-            frame2.render(screen)
-            text_frame1_title.render(screen)
-            button_continue.render(screen)
-            button_exit.render(screen)
+            frame1.render(self.screen)
+            frame2.render(self.screen)
+            text_frame1_title.render(self.screen)
+            button_continue.render(self.screen)
+            button_exit.render(self.screen)
             # Отрисовка курсора
             if pygame.mouse.get_focused():
-                screen.blit(pointer, (pygame.mouse.get_pos()))
+                self.screen.blit(pointer, (pygame.mouse.get_pos()))
             pygame.display.update()
             clock.tick(FPS)
+
+    def game_over(self, screen):
+        pass

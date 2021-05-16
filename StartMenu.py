@@ -4,7 +4,7 @@ from Entity import Fire
 from GuiElements import Button1, Text
 from MenuMap import MenuMap
 from MapLoader import MapLoader
-from MenuElements import *
+from GuiElements import *
 
 
 # Стартовое окно игры

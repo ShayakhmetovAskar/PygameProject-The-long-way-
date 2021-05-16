@@ -1,7 +1,6 @@
 import pygame
 from Constants import *
-from GuiElements import Text, Button1
-from MenuElements import *
+from GuiElements import *
 
 
 # Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрыти
@@ -13,6 +12,7 @@ class TextWindow:
 
         # Текст
         self.text = ''
+        self.size = 24
 
         # Рамка окна
         self.frame = BigFrame()
@@ -35,7 +35,7 @@ class TextWindow:
             self.frame.render(screen)
             self.button.render(screen)
             self.render_text(self.text, [self.frame.x, self.frame.y],
-                             pygame.font.Font(None, int(24 * SCALE)), screen)
+                             pygame.font.Font(None, int(self.size * SCALE)), screen)
 
     # Отрисовка многострочного текста
     def render_text(self, text, pos, font, screen, color=pygame.Color('grey')):
@@ -64,7 +64,8 @@ class TextWindow:
     def open(self):
         self.opened = True
 
-    def set_text(self, text):
+    def set_text(self, text, size=24):
+        self.size = size
         self.text = text
 
     # Функция закрытия, привязана к кнопке
