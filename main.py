@@ -4,6 +4,9 @@ import time
 import pygame
 from StartMenu import StartMenu
 from GuiElements import *
+from MenuElements import HelpButton
+import sys
+import os
 
 pygame.init()
 pygame.font.init()
@@ -13,7 +16,6 @@ pygame.mixer.Channel(1).play(pygame.mixer.Sound('data/sounds/fire.wav'), -1)
 pygame.mixer.Channel(2).play(pygame.mixer.Sound('data/sounds/step.wav'), -1)
 pygame.mixer.Channel(3).play(pygame.mixer.Sound('data/sounds/background.wav'), -1)
 screen = pygame.display.set_mode(SCREEN_SIZE, (pygame.FULLSCREEN | pygame.DOUBLEBUF))
-
 
 def main():
     pygame.mixer.Channel(0).set_volume(0.1)
@@ -28,7 +30,7 @@ def main():
     StartMenu(screen)
 
     # Когда начальное окно закрылось загружаем карту
-    level = MainMap('world.tmx', MapLoader(), screen)
+    level = MainMap('world.tmx', MapLoader())
 
     # Создание игрока
     level.player.health = 100
@@ -38,7 +40,17 @@ def main():
     # Панель состояния игрока
     heath_hud = HealthHUD(level.player)
 
+    # # Кнопка помощи
+    # help_button = HelpButton()
+    # help_button.x = screen.get_width() - 100
+    # help_button.y = 50
+    # help_button.func = level.info_window.open
+
+
+
+    # Открываем окно помощи
     level.text_window.open()
+
 
     # Немного усиливаем звук ветра
     pygame.mixer.Channel(0).set_volume(0.2)
@@ -49,6 +61,7 @@ def main():
         start = time.time()
         # Если здоровье падает до нуля, перезапускаем игру
         if level.player.health <= 0:
+            level.game_over(screen)
             return True
 
         for event in pygame.event.get():
@@ -68,10 +81,12 @@ def main():
         if pygame.mouse.get_focused():
             screen.blit(pointer, (pygame.mouse.get_pos()))
         pygame.display.update()
-        # print(1 / (time.time() - start))
+        #print(1 / (time.time() - start))
         clock.tick(FPS)
+
 
 
 while main():
     pass
 pygame.quit()
+

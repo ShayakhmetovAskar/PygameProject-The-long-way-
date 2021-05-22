@@ -179,7 +179,6 @@ class Text(MenuObject):
         self.y = y
         self.text = text
         self.font = pygame.font.SysFont('', int(size * SCALE))
-        print(text, int(size * SCALE))
         surface = self.font.render(self.text, True, (210, 125, 44))
         super().__init__(surface, x, y)
 
@@ -198,14 +197,14 @@ class Button1:
         self.image_pressed = images['ButtonPressed']
         self.image_hover = images['ButtonSelected']
         self.frame = MenuObject(self.image_def)
-        self.set_text(text)
+        self.text = Text(text, size=50)
         self.pressed = False
         self.func = lambda: None
 
     def set_text(self, text, size=50):
-        print(text)
         self.text = Text(text=text, size=size)
         self.set_pos(self.frame.x, self.frame.y)
+
 
     def update(self):
         x_, y_ = pygame.mouse.get_pos()

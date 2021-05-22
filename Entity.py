@@ -56,6 +56,8 @@ class Player(Entity):
         self.temperature = 100  # Температура
         self.wood = 2  # Количество топлива в инвентаре
         self.parts = 0  # Количество собранных деталей
+        self.speed = 2
+        self.delta_temperature = -0.03
 
         # Направления движения
         self.direction_x = 1
@@ -116,6 +118,14 @@ class Player(Entity):
     def tile_coods(self):
         return (self.x + 20 * TILE_SIZE // 32) // TILE_SIZE, (
                 self.y + 38 * TILE_SIZE // 32) // TILE_SIZE, self.z
+
+    # Охлаждение
+    def freeze(self):
+        self.set_delta_temperature(self.delta_temperature)
+
+    # Нагрев
+    def heat(self):
+        self.set_delta_temperature(0.06)
 
     # Изменение температуры персонажа
     def set_delta_temperature(self, dt):
@@ -185,7 +195,6 @@ class Fire(Entity):
         if self.counter >= self.freq:
             self.counter = 0
 
-
     # Добавление времени горения
     def add_time(self, time):
         if self.time == 0:
@@ -226,7 +235,7 @@ class Chest(Entity):
 
     # Действие при открытии сундука
     def open(self, function=lambda: None):  # function - функция, исполняемая при открытии
-        # Исполняем внешнюю функцию
+        # Исполняем функцию
         function()
         # Сундук теперь был открыт
         self.opened = True

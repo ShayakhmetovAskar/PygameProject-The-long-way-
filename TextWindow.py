@@ -14,6 +14,8 @@ class TextWindow:
         self.text = ''
         self.size = 24
 
+        self.size = 24
+
         # Рамка окна
         self.frame = BigFrame()
         self.frame.align_center()
