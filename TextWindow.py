@@ -14,8 +14,6 @@ class TextWindow:
         self.text = ''
         self.size = 24
 
-        self.size = 24
-
         # Рамка окна
         self.frame = BigFrame()
         self.frame.align_center()
@@ -66,8 +64,7 @@ class TextWindow:
     def open(self):
         self.opened = True
 
-    def set_text(self, text, size=24):
-        self.size = size
+    def set_text(self, text):
         self.text = text
 
     # Функция закрытия, привязана к кнопке

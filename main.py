@@ -4,7 +4,6 @@ import time
 import pygame
 from StartMenu import StartMenu
 from GuiElements import *
-from MenuElements import HelpButton
 import sys
 import os
 

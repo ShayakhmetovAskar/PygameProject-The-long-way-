@@ -35,9 +35,9 @@ class MainMap(Map):
             self.text_window.set_text(text)
 
         self.text_window1 = TextWindow()
-        self.text_window1.size = 50
         self.text_window1.opened = False
         self.text_window1.set_text('')
+        self.text_window1.size = 50
 
         # Окно с картой
         self.map_window = MapWindow('test.png')
