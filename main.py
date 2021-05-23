@@ -14,6 +14,7 @@ pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/sounds/wind.wav'), -1)
 pygame.mixer.Channel(1).play(pygame.mixer.Sound('data/sounds/fire.wav'), -1)
 pygame.mixer.Channel(2).play(pygame.mixer.Sound('data/sounds/step.wav'), -1)
 pygame.mixer.Channel(3).play(pygame.mixer.Sound('data/sounds/background.wav'), -1)
+pygame.mixer.Channel(4).play(pygame.mixer.Sound('data/sounds/monument.wav'), -1)
 screen = pygame.display.set_mode(SCREEN_SIZE, (pygame.FULLSCREEN | pygame.DOUBLEBUF))
 
 def main():
@@ -21,6 +22,7 @@ def main():
     pygame.mixer.Channel(1).set_volume(0.2)
     pygame.mixer.Channel(2).set_volume(0)
     pygame.mixer.Channel(3).set_volume(0.3)
+    pygame.mixer.Channel(4).set_volume(0)
 
     # Убираем курсор, так как есть свой
     pygame.mouse.set_visible(False)
@@ -38,6 +40,7 @@ def main():
 
     # Панель состояния игрока
     heath_hud = HealthHUD(level.player)
+    inv_hud = InventoryHUD(level.player)
 
     # # Кнопка помощи
     # help_button = HelpButton()
@@ -74,6 +77,7 @@ def main():
         # Отрисовка элементов
         level.update(screen)
         heath_hud.render(screen)
+        inv_hud.render(screen)
         screen.blit(compass, (SCREEN_WIDTH - compass.get_width(), SCREEN_HEIGHT - compass.get_height()))
 
         #  Убираем курсор если окно не в фокусе

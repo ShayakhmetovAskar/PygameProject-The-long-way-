@@ -7,6 +7,7 @@ from GuiElements import *
 class TextWindow:
     def __init__(self):
 
+        self.dy = 0
         # Открыто ли окно
         self.opened = False
 
@@ -28,10 +29,10 @@ class TextWindow:
         self.func = lambda: None  # Функция, которую можно привязать к кнопке закрытия
 
     # Отрисовка
-    def render(self, screen):
-        # Обновление состояния кнопки
-        self.button.update()
+    def render(self, screen: pygame.Surface):
         if self.opened:
+            # Обновление состояния кнопки
+            self.button.update()
             self.frame.render(screen)
             self.button.render(screen)
             self.render_text(self.text, [self.frame.x, self.frame.y],
@@ -62,6 +63,7 @@ class TextWindow:
 
     # Функция открытия
     def open(self):
+        self.dy = 0
         self.opened = True
 
     def set_text(self, text):

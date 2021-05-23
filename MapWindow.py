@@ -30,9 +30,9 @@ class MapWindow:
 
     # Отрисовка
     def render(self, screen):
-        # Обновление состояния кнопки
-        self.button.update()
         if self.opened:
+            # Обновление состояния кнопки
+            self.button.update()
             self.frame.render(screen)
             self.map.render(screen)
             self.button.render(screen)

@@ -21,7 +21,7 @@ class HealthHUD:
                                                         (SCREEN_WIDTH // 6,
                                                          int(SCREEN_WIDTH // 45.75)))
         self.thermometer_scale = pygame.transform.scale(load_image('hud\\thermometer scale.png'),
-                                                        (SCREEN_WIDTH // 6,
+                                                        (int(SCREEN_WIDTH // 6),
                                                          int(SCREEN_WIDTH // 45.75)))
 
     def render(self, screen):
@@ -41,63 +41,37 @@ class HealthHUD:
                     (0, 0, temp_width, self.thermometer_scale.get_height()))
 
 
-class InventoryHud:
+class InventoryHUD:
     def __init__(self, player):
         self.player = player
-
-
-# Отображение показателей на экране
-class HUD:
-    def __init__(self, player):
-        # Класс персонажа, откуда будут браться данные
-        self.player = player
-
         # Белая полупрозрачная рамка
-        self.frame = pygame.Surface((SCREEN_WIDTH // 5, SCREEN_HEIGHT // 4))
+        self.frame = pygame.Surface((SCREEN_WIDTH // 5, SCREEN_HEIGHT // 10))
         self.frame.set_alpha(150)
         self.frame.fill((255, 255, 255))
 
-        # Фон полосы здоровья
-        self.health_frame = pygame.Surface((SCREEN_WIDTH // 5 - 20, 20))
-        self.health_frame.fill((50, 50, 50))
-        self.health_frame.set_alpha(128)
+        self.wood = pygame.transform.scale(load_image('hud\\wood-pile.png'), (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
+        self.wood_am = -100
 
-        # Полоса здоровья
-        self.health = pygame.Rect((11, SCREEN_HEIGHT * 4 // 5 + 21, SCREEN_WIDTH // 5 - 22, 18))
+        self.boat_parts = pygame.transform.scale(load_image('hud\\paper-boat.png'), (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
+        self.boat_parts_am = -100
 
-        # Фон полосы теплоты
-        self.cold_frame = pygame.Surface((SCREEN_WIDTH // 5 - 20, 20))
-        self.cold_frame.fill((50, 50, 50))
-        self.cold_frame.set_alpha(128)
-
-        # Полоса теплоты
-        self.cold = pygame.Rect((11, SCREEN_HEIGHT * 4 // 5 + 61, SCREEN_WIDTH // 5 - 22, 18))
-
-    def render(self, screen: pygame.Surface):
-        # Расчет длин полос состояний
-        self.health = pygame.Rect((11, SCREEN_HEIGHT * 4 // 5 + 21,
-                                   (SCREEN_WIDTH // 5 - 22) * self.player.health // 100, 18))
-        self.cold = pygame.Rect((11, SCREEN_HEIGHT * 4 // 5 + 61,
-                                 (SCREEN_WIDTH // 5 - 22) * self.player.temperature // 100, 18))
-
-        # Количество поленьев в инвентаре
-        text_wood = pygame.font.Font(None, 30).render(f'Поленьев в инвентаре: {self.player.wood}',
-                                                      True, (70, 70, 70))
-
-        # Количество собранных деталей
-        text_parts = pygame.font.Font(None, 30).render(f'Деталей собрано: {self.player.parts} из 7',
-                                                       True, (70, 70, 70))
-
-        # Последовательная отрисовка элементов на экране
-        screen.blit(self.frame, (0, SCREEN_HEIGHT * 3 // 4))
-        screen.blit(self.health_frame, (10, SCREEN_HEIGHT * 4 // 5 + 20))
-        pygame.draw.rect(screen, (200, 0, 0), self.health)
-        screen.blit(self.cold_frame, (10, SCREEN_HEIGHT * 4 // 5 + 61))
-        pygame.draw.rect(screen, (0, 0, 150), self.cold)
-
-        screen.blit(text_wood, (10, SCREEN_HEIGHT * 4 // 5 + 100))
-
-        screen.blit(text_parts, (10, SCREEN_HEIGHT * 4 // 5 + 140))
+    def render(self, screen):
+        margin = int((self.frame.get_height() - self.wood.get_height()) / 2)
+        screen.blit(self.frame, (0, SCREEN_HEIGHT - self.frame.get_height()))
+        screen.blit(self.wood, (margin, SCREEN_HEIGHT - self.frame.get_height() + margin))
+        screen.blit(self.boat_parts, (margin * 2 + self.wood.get_width(), SCREEN_HEIGHT - self.frame.get_height() + margin))
+        if self.wood_am != self.player.wood:
+            self.wood_am = self.player.wood
+            self.wood_text = Text(str(self.player.wood), 35)
+            self.wood_text.x = margin + self.wood.get_width() // 8
+            self.wood_text.y = SCREEN_HEIGHT - self.frame.get_height() + margin + self.wood.get_height() // 20
+        if self.boat_parts_am != self.player.parts:
+            self.boat_parts_am = self.player.parts
+            self.boat_parts_text = Text(f'{str(self.player.parts)}/9')
+            self.boat_parts_text.x = margin * 2 + self.wood.get_width() + self.boat_parts.get_width() // 8
+            self.boat_parts_text.y = SCREEN_HEIGHT - self.frame.get_height() + margin + self.boat_parts.get_height() // 20
+        self.wood_text.render(screen)
+        self.boat_parts_text.render(screen)
 
 
 images = {
@@ -123,9 +97,9 @@ images = {
     'ButtonPause': pygame.transform.scale(load_image('gui\\pause_button.png'),
                                           (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
     'ButtonPauseHover': pygame.transform.scale(load_image('gui\\pause_button_hover.png'),
-                                          (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
+                                               (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
     'ButtonPausePressed': pygame.transform.scale(load_image('gui\\pause_button_pressed.png'),
-                                          (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
+                                                 (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
 
     'ButtonTextWindow': pygame.transform.scale(load_image('gui\\text_window_button.png'),
                                                (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
@@ -204,7 +178,6 @@ class Button1:
     def set_text(self, text, size=50):
         self.text = Text(text=text, size=size)
         self.set_pos(self.frame.x, self.frame.y)
-
 
     def update(self):
         x_, y_ = pygame.mouse.get_pos()

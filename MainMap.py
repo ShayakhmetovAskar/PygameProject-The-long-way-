@@ -26,7 +26,6 @@ class MainMap(Map):
             text = file.read()
             self.box_texts = iter(text.splitlines())
 
-
         # Окно с текстом
         self.text_window = TextWindow()
         self.text_window.opened = False
@@ -40,7 +39,7 @@ class MainMap(Map):
         self.text_window1.size = 50
 
         # Окно с картой
-        self.map_window = MapWindow('test.png')
+        self.map_window = MapWindow('map.png')
         self.map_window.opened = False
 
         # Кнопка паузы
@@ -74,6 +73,9 @@ class MainMap(Map):
             self.objects[(x, y)] = Chest(x * TILE_SIZE, y * TILE_SIZE, z,
                                          self.textures[tile_id],
                                          self.textures[tile_id + 1])
+
+        if tile_id == 229 or tile_id == 231:
+            self.objects[(x, y)] = Monument(x * TILE_SIZE, y * TILE_SIZE, z)
 
     def render_object(self, tile_id, screen, x, y, coords):
         # Если текстура - костер: нарисовать огонь
@@ -162,12 +164,9 @@ class MainMap(Map):
         self.btn_map.render(screen)
         self.btn_text_window.render(screen)
         self.btn_pause.render(screen)
-        if self.map_window.opened:
-            self.map_window.render(screen)
-        if self.text_window.opened:
-            self.text_window.render(screen)
-        if self.text_window1.opened:
-            self.text_window1.render(screen)
+        self.map_window.render(screen)
+        self.text_window.render(screen)
+        self.text_window1.render(screen)
 
     def update(self, screen):
 
@@ -177,19 +176,25 @@ class MainMap(Map):
         m_pos = pygame.mouse.get_pos()
 
         # Расстояние до ближайшего костра
-        fire_dist = 1000
+        fire_dist = 5000
+        # Расстояние до ближайшего монумента
+        monument_dist = 5000
         for obj in self.objects.values():
             if type(obj) == Fire:
                 # Если курсор находится на клетке с костром, то на следующей отрисовке выводим
                 # полосу состояния костра
-                obj.selected = \
-                    (obj.x // TILE_SIZE, obj.y // TILE_SIZE) == self.tile_pos(m_pos)
+                obj.selected = (obj.x // TILE_SIZE, obj.y // TILE_SIZE) == self.tile_pos(m_pos)
                 # Находим расстояние до ближайшего костра
                 if obj.time > 0:
                     fire_dist = min(fire_dist, self.nearness(self.player.x, self.player.y, obj.x - 3,
                                                              obj.y - 16))
                 # Обновление костра (Анимация, Уменьшение времени горения)
                 obj.update()
+            if type(obj) == Monument and obj.active:
+                monument_dist = min(monument_dist, self.nearness(self.player.x, self.player.y,
+                                                                 obj.x, obj.y))
+
+
 
         # Если до ближайшего костра меньше 50 пикселей (в декартовой системе)
         # греем игрока, иначе охлаждаем
@@ -205,6 +210,10 @@ class MainMap(Map):
         else:
             fire_volume = max(0, -149 + -1 / 150 * fire_dist + (150 + 1))
         pygame.mixer.Channel(1).set_volume(fire_volume)
+
+        # Громкость звук монумента
+        pygame.mixer.Channel(4).set_volume(max(0, 1 - monument_dist / 1500))
+
 
         # Звуки шага
         if self.player.walking:
@@ -241,7 +250,7 @@ class MainMap(Map):
             return
         if tile_id == 151:
             if self.player.use_wood():
-                self.objects[tile_pos].add_time(200)
+                self.objects[tile_pos].add_time(250)
                 # Звук бросания в костер
                 self.player.throw_sound.play()
         # Нажатие на клетку с дровами
@@ -259,17 +268,24 @@ class MainMap(Map):
                 self.objects[tile_pos].open()
                 # Проигрывается звук открытия
                 self.player.open_sound.play()
+
         elif tile_id == 229:
-            with open('data/texts/speed_boost.txt', encoding='utf8') as file:
-                self.text_window1.set_text(file.read())
-            self.text_window1.open()
-            self.player.speed = 4
+            if self.objects[tile_pos].active:
+                with open('data/texts/speed_boost.txt', encoding='utf8') as file:
+                    self.text_window1.set_text(file.read())
+                self.text_window1.open()
+                self.player.magic_sound.play()
+                self.player.speed = 4
+                self.objects[tile_pos].active = False
 
         elif tile_id == 231:
-            with open('data/texts/temperature_boost.txt', encoding='utf8') as file:
-                self.text_window1.set_text(file.read())
-            self.text_window1.open()
-            self.player.delta_temperature = -0.01
+            if self.objects[tile_pos].active:
+                with open('data/texts/temperature_boost.txt', encoding='utf8') as file:
+                    self.text_window1.set_text(file.read())
+                self.text_window1.open()
+                self.player.magic_sound.play()
+                self.player.delta_temperature = -0.01
+                self.objects[tile_pos].active = False
 
 
         # Лодка

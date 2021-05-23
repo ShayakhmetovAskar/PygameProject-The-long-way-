@@ -16,7 +16,7 @@ def slice_texture(name, width, height, size):
 
 
 # Изображения анимации огня
-fire_images = [transform.scale(load_image(f'fire/00{i // 10}{i % 10}.png'), (80, 128)) for i in
+fire_images = [transform.scale(load_image(f'fire/00{i // 10}{i % 10}.png'), (80, 60)) for i in
                range(1, 31)]
 
 # Изображения анимации персонажа
@@ -50,6 +50,9 @@ class Player(Entity):
         # Звук поднятия предмета
         self.pick_up_sound = pygame.mixer.Sound('data/sounds/pick_up.wav')
         self.pick_up_sound.set_volume(0.3)
+        # Магический звук
+        self.magic_sound = pygame.mixer.Sound('data/sounds/magic_sound.wav')
+        self.magic_sound.set_volume(0.3)
 
         # Показатели персонажа
         self.health = 100  # Здоровье
@@ -138,7 +141,7 @@ class Player(Entity):
 
     # Добавление топлива в инвентарь
     def add_wood(self):
-        if self.wood < 10:
+        if self.wood < 9:
             self.wood += 1
             return True
         return False
@@ -206,7 +209,7 @@ class Fire(Entity):
 
     # Отрисовка
     def render(self, screen: Surface, coords):
-        screen.blit(self.image, (coords[0] - 9, coords[1] - 105))
+        screen.blit(self.image, (coords[0] - 9, coords[1] - 40))
         # Если мышь наведена на костер, рисуется полоса времени горения
         if self.selected:
             # Серый прозрачный фон полосы
@@ -214,7 +217,7 @@ class Fire(Entity):
             bg.set_alpha(128)
             bg.fill((90, 90, 90))
             screen.blit(bg, (coords[0] + 3, coords[1] - 30))
-            # Оранжевая полоса времени
+            # Оранжевая полоса времени горения
             bar = pygame.Surface((max(0, self.time // 33), 5))
             bar.set_alpha(128)
             bar.fill((255, 51, 0))
@@ -245,3 +248,10 @@ class Chest(Entity):
     # Отрисовка изображения
     def render(self, screen: Surface, coords):
         screen.blit(self.image, coords)
+
+
+class Monument(Entity):
+    def __init__(self, x, y, z):
+        img = pygame.Surface((1, 1))
+        self.active = True
+        super().__init__(img, x, y, z)
