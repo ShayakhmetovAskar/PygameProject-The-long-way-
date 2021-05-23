@@ -12,7 +12,7 @@ def load_image(name):
     if not os.path.isfile(fullname):
         print(f'Файл "{fullname}" не найден')
         sys.exit()
-    image = pygame.image.load(fullname)
+    image = pygame.image.load(fullname).convert_alpha()
     return image
 
 
@@ -60,7 +60,7 @@ class Map:
     # Функция разрезает изображение на заданное количество текстур
     def slice_texture(self, name, width, height, size):
         texture = load_image(name)
-        textures_list = [pygame.Surface([64, 32], pygame.SRCALPHA, 32).convert_alpha()]
+        textures_list = [pygame.Surface([64, 32], pygame.SRCALPHA, 32)]
         for y in range(height):
             for x in range(width):
                 textures_list.append(
@@ -100,7 +100,7 @@ class Map:
 
                         # Если нажать кнопку h - будет показан процесс отрисовки
                         if pygame.key.get_pressed()[pygame.K_h]:
-                            screen.blit(pygame.transform.scale(tmp, (1920, 1080)), (0, 0))
+                            screen.blit(pygame.transform.scale(tmp, SCREEN_SIZE), (0, 0))
                             pygame.display.flip()
 
         # Растягиваем временный холст и отрисовываем его на экране
@@ -169,6 +169,9 @@ class Map:
     @abstractmethod
     def tile_clicked(self, tile_pos, tile_id):
         pass
+
+
+
 
 
     def exit(self):

@@ -1,6 +1,8 @@
 import os
+from random import choice
+
 from Constants import *
-from GuiElements import SmallButton, Button1, Text, Frame2, Frame1
+from GuiElements import SmallButton, Button1, Text, Frame2, Frame1, Hint
 from MapBase import Map
 from Entity import *
 from TextWindow import TextWindow
@@ -64,6 +66,10 @@ class MainMap(Map):
                 self.btn_map.frame.image.get_height() * 0.2) + self.btn_map.frame.image.get_height() + self.btn_pause.frame.image.get_height())
         self.btn_text_window.func = lambda: self.text_window.open()
 
+
+        # Подсказка при наведении на объекты
+        self.hint = Hint()
+
     def set_object(self, tile_id, x, y, z):
         # Если клетка костер - прикрепляем к нему объект огня
         if tile_id == 151:
@@ -98,8 +104,6 @@ class MainMap(Map):
         dx, dy = 0, 0
 
         speed = self.player.speed
-        if pygame.key.get_pressed()[pygame.K_m]:
-            speed = 20
 
         if pygame.key.get_pressed()[pygame.K_w]:
             dy = -speed
@@ -164,6 +168,7 @@ class MainMap(Map):
         self.btn_map.render(screen)
         self.btn_text_window.render(screen)
         self.btn_pause.render(screen)
+        self.tile_hover(screen, pygame.mouse.get_pos())
         self.map_window.render(screen)
         self.text_window.render(screen)
         self.text_window1.render(screen)
@@ -254,7 +259,7 @@ class MainMap(Map):
         elif tile_id == 149 or tile_id == 150:
             if self.player.add_wood():
                 # Звук поднятия предмета
-                self.player.pick_up_sound.play()
+                choice([self.player.wood_sound1, self.player.wood_sound2]).play()
         # Нажатие на клетку с сундуком
         elif tile_id == 145 or tile_id == 147 or tile_id == 161 or tile_id == 177:
             if not self.objects[tile_pos].opened:
@@ -288,10 +293,12 @@ class MainMap(Map):
 
         # Лодка
         elif tile_id in [296, 297, 298]:
-            if self.player.parts >= 8:
+            if self.player.parts >= 9:
                 self.text_window.text_size = 60
                 with open('data/texts/ending.txt', encoding='utf8') as file:
                     text = file.read()
+                self.player.delta_temperature = 0
+                self.player.temperature += 1
                 self.text_window.text = text
                 self.text_window.button.set_text('Выйти из игры')
                 self.text_window.button.func = self.exit
@@ -302,6 +309,40 @@ class MainMap(Map):
                     text = file.read()
                 self.text_window1.text = text
                 self.text_window1.open()
+
+    def tile_hover(self, screen, pos):
+        # Нахождение координат клетки
+        tile_pos = self.tile_pos(pos)
+        # Нахождение id клетки
+        tile_id = self.map[2][tile_pos[1]][tile_pos[0]]
+
+        if tile_id == tile_id == 149 or tile_id == 150:
+            self.hint.set_text('Охапка дров')
+        elif tile_id == 145 or tile_id == 147 or tile_id == 161 or tile_id == 177:
+            self.hint.set_text('Ящик с деталями')
+        elif tile_id == 151:
+            text = 'Костер'
+            if self.objects[tile_pos].time:
+                text += f' (осталось {int(self.objects[tile_pos].time / 15)}с)'
+            else:
+                text += ' (потух)'
+            self.hint.set_text(text)
+        elif tile_id == 229 or tile_id == 231:
+            self.hint.set_text('Мистический монумент')
+        elif tile_id in [296, 297, 298]:
+            self.hint.set_text('Сломанная лодка')
+        elif tile_id in [1357, 1358, 1359]:
+            self.hint.set_text('Снеговик (веселый)')
+        elif tile_id == 545:
+            self.hint.set_text('Охотничья вышка')
+        else:
+            if pygame.key.get_pressed()[pygame.K_j]:
+                self.hint.set_text(str(tile_id))
+            else:
+                return
+        self.hint.render(screen, pos)
+
+
 
     def pause(self, screen: Surface):
         background = screen.copy()

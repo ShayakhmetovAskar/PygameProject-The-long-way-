@@ -14,7 +14,7 @@ TILE_SIZE = 32
 MAPS_DIR = 'data/maps'
 IMAGES_DIR = 'data/images'
 # Разрешение отрисовки
-RENDER_SIZE = RENDER_WIDTH, RENDER_HEIGHT = (720, 405)
+RENDER_SIZE = RENDER_WIDTH, RENDER_HEIGHT = (560, 315)
 # Частота обновлений кадров
 FPS = 30
 

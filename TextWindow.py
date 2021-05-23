@@ -43,7 +43,7 @@ class TextWindow:
         lines = [line.split() for line in text.splitlines()]
         margin = int(self.frame.image.get_width() * 0.1)
         space = font.size(' ')[0]
-        right_bound = self.frame.x + self.frame.image.get_width() - margin * 1.1
+        right_bound = self.frame.x + self.frame.image.get_width() - margin
         pos[0] += margin
         pos[1] += margin
         x, y = pos

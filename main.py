@@ -84,7 +84,7 @@ def main():
         if pygame.mouse.get_focused():
             screen.blit(pointer, (pygame.mouse.get_pos()))
         pygame.display.update()
-        #print(1 / (time.time() - start))
+        # print(1 / (time.time() - start))
         clock.tick(FPS)
 
 

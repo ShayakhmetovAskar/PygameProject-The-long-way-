@@ -49,17 +49,20 @@ class InventoryHUD:
         self.frame.set_alpha(150)
         self.frame.fill((255, 255, 255))
 
-        self.wood = pygame.transform.scale(load_image('hud\\wood-pile.png'), (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
+        self.wood = pygame.transform.scale(load_image('hud\\wood-pile.png'),
+                                           (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
         self.wood_am = -100
 
-        self.boat_parts = pygame.transform.scale(load_image('hud\\paper-boat.png'), (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
+        self.boat_parts = pygame.transform.scale(load_image('hud\\paper-boat.png'),
+                                                 (SCREEN_HEIGHT // 13, SCREEN_HEIGHT // 13))
         self.boat_parts_am = -100
 
     def render(self, screen):
         margin = int((self.frame.get_height() - self.wood.get_height()) / 2)
         screen.blit(self.frame, (0, SCREEN_HEIGHT - self.frame.get_height()))
         screen.blit(self.wood, (margin, SCREEN_HEIGHT - self.frame.get_height() + margin))
-        screen.blit(self.boat_parts, (margin * 2 + self.wood.get_width(), SCREEN_HEIGHT - self.frame.get_height() + margin))
+        screen.blit(self.boat_parts, (
+            margin * 2 + self.wood.get_width(), SCREEN_HEIGHT - self.frame.get_height() + margin))
         if self.wood_am != self.player.wood:
             self.wood_am = self.player.wood
             self.wood_text = Text(str(self.player.wood), 35)
@@ -220,3 +223,22 @@ class SmallButton(Button1):
         self.image_pressed = images[img_prs]
         self.image_hover = images[img_hov]
         self.frame = MenuObject(self.image_def)
+
+
+class Hint:
+    def __init__(self):
+        self.frame = pygame.Surface((0, 0))
+        self.frame.set_alpha(128)
+        self.text = Text('')
+
+    def set_text(self, text):
+        self.text.set_text(text)
+        self.frame = pygame.transform.scale(self.frame,
+                                            (int(self.text.image.get_width() * 1.2),
+                                             int(self.text.image.get_height() * 1.1)))
+
+    def render(self, screen, pos):
+        screen.blit(self.frame, (pos[0] - self.frame.get_width(), pos[1]))
+        screen.blit(self.text.image,
+                    (pos[0] + int(self.text.image.get_width() * 0.1) - self.frame.get_width(),
+                     pos[1] + int(self.text.image.get_height() * 0.05)))

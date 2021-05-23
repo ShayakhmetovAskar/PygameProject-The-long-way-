@@ -48,8 +48,10 @@ class Player(Entity):
         self.open_sound = pygame.mixer.Sound('data/sounds/chest_open.wav')
         self.open_sound.set_volume(0.3)
         # Звук поднятия предмета
-        self.pick_up_sound = pygame.mixer.Sound('data/sounds/pick_up.wav')
-        self.pick_up_sound.set_volume(0.3)
+        self.wood_sound1 = pygame.mixer.Sound('data/sounds/wood1.wav')
+        self.wood_sound1.set_volume(0.5)
+        self.wood_sound2 = pygame.mixer.Sound('data/sounds/wood2.wav')
+        self.wood_sound2.set_volume(0.5)
         # Магический звук
         self.magic_sound = pygame.mixer.Sound('data/sounds/magic_sound.wav')
         self.magic_sound.set_volume(0.3)
@@ -135,7 +137,7 @@ class Player(Entity):
         self.temperature += dt
         if self.temperature < 0:
             self.temperature = 0
-            self.health -= 0.1
+            self.health -= 0.05
         elif self.temperature > 100:
             self.temperature = 100
 
