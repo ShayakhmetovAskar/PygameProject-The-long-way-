@@ -194,8 +194,6 @@ class MainMap(Map):
                 monument_dist = min(monument_dist, self.nearness(self.player.x, self.player.y,
                                                                  obj.x, obj.y))
 
-
-
         # Если до ближайшего костра меньше 50 пикселей (в декартовой системе)
         # греем игрока, иначе охлаждаем
         if fire_dist < 100:
@@ -213,7 +211,6 @@ class MainMap(Map):
 
         # Громкость звук монумента
         pygame.mixer.Channel(4).set_volume(max(0, 1 - monument_dist / 1500))
-
 
         # Звуки шага
         if self.player.walking:
@@ -269,6 +266,7 @@ class MainMap(Map):
                 # Проигрывается звук открытия
                 self.player.open_sound.play()
 
+        # Монументы
         elif tile_id == 229:
             if self.objects[tile_pos].active:
                 with open('data/texts/speed_boost.txt', encoding='utf8') as file:
@@ -290,7 +288,7 @@ class MainMap(Map):
 
         # Лодка
         elif tile_id in [296, 297, 298]:
-            if self.player.parts >= 7:
+            if self.player.parts >= 8:
                 self.text_window.text_size = 60
                 with open('data/texts/ending.txt', encoding='utf8') as file:
                     text = file.read()
@@ -298,6 +296,12 @@ class MainMap(Map):
                 self.text_window.button.set_text('Выйти из игры')
                 self.text_window.button.func = self.exit
                 self.text_window.open()
+            else:
+                self.text_window1.text_size = 60
+                with open('data/texts/not_enough_parts.txt', encoding='utf8') as file:
+                    text = file.read()
+                self.text_window1.text = text
+                self.text_window1.open()
 
     def pause(self, screen: Surface):
         background = screen.copy()

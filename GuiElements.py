@@ -45,7 +45,7 @@ class InventoryHUD:
     def __init__(self, player):
         self.player = player
         # Белая полупрозрачная рамка
-        self.frame = pygame.Surface((SCREEN_WIDTH // 5, SCREEN_HEIGHT // 10))
+        self.frame = pygame.Surface((SCREEN_WIDTH // 7, SCREEN_HEIGHT // 10))
         self.frame.set_alpha(150)
         self.frame.fill((255, 255, 255))
 
