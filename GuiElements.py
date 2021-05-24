@@ -44,7 +44,6 @@ class HealthHUD:
 class InventoryHUD:
     def __init__(self, player):
         self.player = player
-        # Белая полупрозрачная рамка
         self.frame = pygame.Surface((SCREEN_WIDTH // 7, SCREEN_HEIGHT // 10))
         self.frame.set_alpha(150)
         self.frame.fill((255, 255, 255))
@@ -110,11 +109,10 @@ images = {
                                                     (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
     'ButtonTextPressed': pygame.transform.scale(load_image('gui\\text_window_button_pressed.png'),
                                                 (SCREEN_WIDTH // 20, SCREEN_WIDTH // 20)),
-
 }
 
 
-# Базовый класс для элементов графического интерфейса
+# Базовый класс для элементов интерфейса
 class MenuObject:
     def __init__(self, image: pygame.Surface, x=0, y=0):
         self.image = image
@@ -225,6 +223,7 @@ class SmallButton(Button1):
         self.frame = MenuObject(self.image_def)
 
 
+# Текст, появляющийся при наведении курсора на объекты
 class Hint:
     def __init__(self):
         self.frame = pygame.Surface((0, 0))

@@ -4,7 +4,7 @@ from Constants import *
 from pygame import Surface, transform
 
 
-# Функция разрезает изображение на заданное количество текстур
+# Функция разрезает изображение текстуры
 def slice_texture(name, width, height, size):
     texture = load_image(name)
     textures_list = []
@@ -15,16 +15,16 @@ def slice_texture(name, width, height, size):
     return textures_list
 
 
-# Изображения анимации огня
+# Анимация огня
 fire_images = [transform.scale(load_image(f'fire/00{i // 10}{i % 10}.png'), (80, 60)) for i in
                range(1, 31)]
 
-# Изображения анимации персонажа
+# Анимация персонажа
 player_images = [transform.scale(im, (32, 32)) for im in
                  slice_texture('character.png', 9, 8, (56, 65))]
 
 
-# Базовый класс для игровых сущностей
+# Игровой объект
 class Entity:
     def __init__(self, image: Surface, x, y, z):
         self.image = image
@@ -52,7 +52,7 @@ class Player(Entity):
         self.wood_sound1.set_volume(0.5)
         self.wood_sound2 = pygame.mixer.Sound('data/sounds/wood2.wav')
         self.wood_sound2.set_volume(0.5)
-        # Магический звук
+        # Звук монумента
         self.magic_sound = pygame.mixer.Sound('data/sounds/magic_sound.wav')
         self.magic_sound.set_volume(0.3)
 
@@ -62,7 +62,7 @@ class Player(Entity):
         self.wood = 2  # Количество топлива в инвентаре
         self.parts = 0  # Количество собранных деталей
         self.speed = 2
-        self.delta_temperature = -0.03
+        self.delta_temperature = -0.03  # Быстрота замерзания
 
         # Направления движения
         self.direction_x = 1
@@ -73,16 +73,15 @@ class Player(Entity):
         # Счетчик простоя и скорость анимации
         self.counter, self.freq = 0, 2
 
-        # Границы анимаций
+        # Границы кадров анимации
         self.border1, self.border2 = 0, 0
-        # Ходит ли персонаж
-        self.walking = False
 
+        self.walking = False
         # размеры изображения персонажа
         self.w = self.image.get_width()
         self.h = self.image.get_height()
 
-    # Обновление изображения персонажа для анимирования
+    # Анимирование
     def update(self):
         if not self.counter:
             if not self.walking:
@@ -96,7 +95,7 @@ class Player(Entity):
         if self.counter >= self.freq:
             self.counter = 0
 
-    # Изменение цикла анимации (зависит от направления движения)
+    # Направление движения
     def walk(self):
         if not self.walking:
             return
@@ -141,38 +140,35 @@ class Player(Entity):
         elif self.temperature > 100:
             self.temperature = 100
 
-    # Добавление топлива в инвентарь
+    # Добавление дров в инвентарь
     def add_wood(self):
         if self.wood < 9:
             self.wood += 1
             return True
         return False
 
-    # Использование топлива из инвентаря
+    # Использование дров
     def use_wood(self) -> bool:
         if self.wood > 0:
             self.wood -= 1
             return True
         return False
 
-    # Добавление ресурса в инвентарь
+    # Добавление детали в инвентарь
     def add_part(self):
         self.parts += 1
-        if self.parts == 7:
-            pass
 
     # Отрисовка персонажа
     def render(self, screen: Surface, coords):
         screen.blit(self.image, to_isometric(*coords))
 
 
-# Класс пламени
+# Класс пламени костра
 class Fire(Entity):
     def __init__(self, x, y, z):
         super().__init__(fire_images[0], x, y, z)
-        # Бесконечный костер
         self.endless = False
-        # Сколько осталось пламени гореть
+        # Время горения
         self.time = 0
         # Цикл анимации
         self.cycle = 0
@@ -183,7 +179,7 @@ class Fire(Entity):
         # Размеры изображения
         self.w, self.h = self.image.get_size()
 
-    # Обновление изображения пламени
+    # Анимация
     def update(self):
         if not self.counter:
             if self.time == 0:
@@ -226,23 +222,21 @@ class Fire(Entity):
             screen.blit(bar, (coords[0] + 3, coords[1] - 30))
 
 
-# Класс сундука
+# Ящик с деталями
 class Chest(Entity):
     def __init__(self, x, y, z, im_closed, im_open):
         # Был ли сундук открыт
         self.opened = False
 
-        # Изображение открытого сундука и закртытого
+        # Изображение открытого сундука и закрытого
         self.im_open = im_open
         self.im_closed = im_closed
 
         super().__init__(im_closed, x, y, z)
 
     # Действие при открытии сундука
-    def open(self, function=lambda: None):  # function - функция, исполняемая при открытии
-        # Исполняем функцию
+    def open(self, function=lambda: None):  # function - функция, выполняется при открытии
         function()
-        # Сундук теперь был открыт
         self.opened = True
         # Картинка заменяется на открытый сундук
         self.image = self.im_open
@@ -252,7 +246,11 @@ class Chest(Entity):
         screen.blit(self.image, coords)
 
 
+# Монумент
 class Monument(Entity):
+    def update(self):
+        pass
+
     def __init__(self, x, y, z):
         img = pygame.Surface((1, 1))
         self.active = True

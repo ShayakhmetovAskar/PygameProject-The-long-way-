@@ -1,7 +1,6 @@
 from math import sin, cos, pi
 
 from Entity import Fire
-from GuiElements import Button1, Text
 from MenuMap import MenuMap
 from MapLoader import MapLoader
 from GuiElements import *
@@ -56,7 +55,7 @@ class StartMenu:
             self.frame1.y + self.frame1.image.get_height() * 9 // 10 - self.button_exit.frame.image.get_height() - self.button_exit.frame.image.get_height()
         )
 
-        # Установка действий на кнопки
+        # Установка функций на кнопки
         self.button_exit.func = self.exit
         self.button_start.func = self.start
 
@@ -78,8 +77,7 @@ class StartMenu:
             self.button_start.update()
             self.button_exit.update()
 
-            # Отртисовка уровня
-            screen.fill((0, 0, 0))
+            # Отрисоква уровня
             self.level.render(screen)
 
             # Затемнение фона, путем наложения полупрозрачного прямоугольника на экран

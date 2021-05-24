@@ -1,11 +1,8 @@
 from MainMap import MainMap
 from MapLoader import MapLoader
 import time
-import pygame
 from StartMenu import StartMenu
 from GuiElements import *
-import sys
-import os
 
 pygame.init()
 pygame.font.init()
@@ -17,6 +14,7 @@ pygame.mixer.Channel(3).play(pygame.mixer.Sound('data/sounds/background.wav'), -
 pygame.mixer.Channel(4).play(pygame.mixer.Sound('data/sounds/monument.wav'), -1)
 screen = pygame.display.set_mode(SCREEN_SIZE, (pygame.FULLSCREEN | pygame.DOUBLEBUF))
 
+
 def main():
     pygame.mixer.Channel(0).set_volume(0.1)
     pygame.mixer.Channel(1).set_volume(0.2)
@@ -24,44 +22,32 @@ def main():
     pygame.mixer.Channel(3).set_volume(0.3)
     pygame.mixer.Channel(4).set_volume(0)
 
-    # Убираем курсор, так как есть свой
     pygame.mouse.set_visible(False)
 
-    # Запускаем начальное окно
+    # Запускаем главное меню
     StartMenu(screen)
 
-    # Когда начальное окно закрылось загружаем карту
+    # Загружаем игру, когда главное меню закрылось
     level = MainMap('world.tmx', MapLoader())
 
-    # Создание игрока
     level.player.health = 100
     level.player.temperature = 100
     level.player.wood = 2
 
-    # Панель состояния игрока
+    # Панели состояния игрока
     heath_hud = HealthHUD(level.player)
     inv_hud = InventoryHUD(level.player)
 
-    # # Кнопка помощи
-    # help_button = HelpButton()
-    # help_button.x = screen.get_width() - 100
-    # help_button.y = 50
-    # help_button.func = level.info_window.open
-
-
-
-    # Открываем окно помощи
+    # Открываем окно с правилами
     level.text_window.open()
 
-
-    # Немного усиливаем звук ветра
     pygame.mixer.Channel(0).set_volume(0.2)
 
     clock = pygame.time.Clock()
     running = True
     while running:
         start = time.time()
-        # Если здоровье падает до нуля, перезапускаем игру
+        # Если здоровье падает до нуля открываем окно game_over
         if level.player.health <= 0:
             level.game_over(screen)
             return True
@@ -84,12 +70,10 @@ def main():
         if pygame.mouse.get_focused():
             screen.blit(pointer, (pygame.mouse.get_pos()))
         pygame.display.update()
-        # print(1 / (time.time() - start))
+        framerate = 1 / (time.time() - start)
         clock.tick(FPS)
-
 
 
 while main():
     pass
 pygame.quit()
-

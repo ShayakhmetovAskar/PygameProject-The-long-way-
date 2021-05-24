@@ -5,17 +5,16 @@ from Entity import *
 from TextWindow import TextWindow
 import pygame
 
-
+# Уровень из главного меню
 class MenuMap(Map):
-
     def __init__(self, name, map_loader):
         super().__init__(name, map_loader)
-        # Горизотальное и вертикальное смещение камеры (в декартовой системе координат)
+        # смещение камеры
         self.ofx = 0
         self.ofy = 0
 
     def set_object(self, tile_id, x, y, z):
-        # Если клетка костер - прикрепляем к нему объект огня
+        # Костер
         if tile_id == 151:
             self.objects[(x, y)] = Fire(x * TILE_SIZE, y * TILE_SIZE, z)
 

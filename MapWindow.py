@@ -1,13 +1,10 @@
-import pygame
-from Constants import *
 from GuiElements import *
 
 
-# Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрыти
+# Окно с картой местности
 class MapWindow:
     def __init__(self, map_image):
 
-        # Открыто ли окно
         self.opened = False
         # Рамка окна
         self.frame = BigFrame()
@@ -31,13 +28,11 @@ class MapWindow:
     # Отрисовка
     def render(self, screen):
         if self.opened:
-            # Обновление состояния кнопки
             self.button.update()
             self.frame.render(screen)
             self.map.render(screen)
             self.button.render(screen)
 
-    # Функция открытия
     def open(self):
         self.opened = True
 

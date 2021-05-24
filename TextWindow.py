@@ -3,12 +3,9 @@ from Constants import *
 from GuiElements import *
 
 
-# Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрыти
+# Окно, которое можно показывать во время игры содержит в себе текст и кнопку закрытия
 class TextWindow:
     def __init__(self):
-
-        self.dy = 0
-        # Открыто ли окно
         self.opened = False
 
         # Текст
