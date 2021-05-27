@@ -62,7 +62,7 @@ class Player(Entity):
         self.wood = 2  # Количество топлива в инвентаре
         self.parts = 0  # Количество собранных деталей
         self.speed = 2
-        self.delta_temperature = -0.03  # Быстрота замерзания
+        self.delta_temperature = -0.02  # Быстрота замерзания
 
         # Направления движения
         self.direction_x = 1
