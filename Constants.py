@@ -6,6 +6,8 @@ import pygame
 pygame.init()
 # Размеры экрана
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+# SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 400
+
 SCALE = SCREEN_WIDTH / 1920
 pygame.quit()
 # Размер одной клетки в декартовой система
@@ -31,6 +33,9 @@ pointer = pygame.transform.scale(load_image('gui\\pointer.png'), (24, 34))
 
 # Компас (в углу экрана)
 compass = pygame.transform.scale(load_image('compass.png'), (72, 72))
+
+# Иконка игры
+icon = load_image('icon.png')
 
 
 # Перевод из декартовых в изометрические координаты

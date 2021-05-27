@@ -1,5 +1,6 @@
 from random import choice
 from Constants import *
+import Constants
 from GuiElements import SmallButton, Button1, Text, Frame2, Frame1, Hint
 from MapBase import Map
 from Entity import *
@@ -29,6 +30,7 @@ class MainMap(Map):
         # Окно с текстом
         self.text_window = TextWindow()
         self.text_window.opened = False
+        self.text_window.size = 40
         # Выводим правила игры
         with open('data/texts/rules.txt', encoding='utf8') as file:
             text = file.read()
@@ -295,13 +297,13 @@ class MainMap(Map):
     # Текст всплывающий при наведении на объекты
     def tile_hover(self, screen, pos):
         tile_pos = self.tile_pos(pos)
-        tile_id = self.map[2][tile_pos[1]][tile_pos[0]]
+        tile_id = self.get_tile_id(tile_pos)
         # Дрова
         if tile_id == tile_id == 149 or tile_id == 150:
-            self.hint.set_text('Охапка дров')
+            self.hint.set_text('Взять дрова')
         # Ящики с деталями
         elif tile_id == 145 or tile_id == 147 or tile_id == 161 or tile_id == 177:
-            self.hint.set_text('Ящик с деталями')
+            self.hint.set_text('Открыть ящик')
         # Костер
         elif tile_id == 151:
             text = 'Костер'
@@ -318,10 +320,12 @@ class MainMap(Map):
             self.hint.set_text('Сломанная лодка')
         # Снеговики
         elif tile_id in [1357, 1358, 1359]:
-            self.hint.set_text('Снеговик (смешной)')
-        # Вышки
-        elif tile_id == 545:
-            self.hint.set_text('Охотничья вышка')
+            self.hint.set_text('Снеговик')
+
+        # Двери хижин
+        # elif tile_id in [405, 406, 421, 418, 419, 402, 403]:
+        #    self.hint.set_text('Войти')
+
         else:
             # При зажатии кнопки j всплывает id клетки
             if pygame.key.get_pressed()[pygame.K_j]:

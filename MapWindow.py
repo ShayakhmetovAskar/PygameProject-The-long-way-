@@ -18,9 +18,10 @@ class MapWindow:
         self.button.func = self.close
 
         # Сама карта
-        self.map = MenuObject(pygame.transform.scale(load_image(f'map_schemes\\{map_image}'), (
-            int(self.frame.image.get_width() * 0.9),
-            int((self.frame.image.get_height() - self.button.frame.image.get_height()) * 0.9))))
+        self.map =MenuObject(load_image(f'map_schemes\\{map_image}'))
+        height = int(self.frame.image.get_height() * 0.9)
+        width = int(self.map.image.get_width() / self.map.image.get_height() * height)
+        self.map.image = pygame.transform.scale(self.map.image, (width, height))
         self.map.align_center()
 
         self.func = lambda: None  # Функция, которую можно привязать к кнопке закрытия

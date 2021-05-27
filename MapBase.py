@@ -55,11 +55,11 @@ class Map:
     @staticmethod
     def slice_texture(name, width, height, size):
         texture = load_image(name)
-        textures_list = [pygame.Surface([64, 32], pygame.SRCALPHA, 32)]
+        textures_list = [pygame.Surface([TILE_SIZE * 2, TILE_SIZE], pygame.SRCALPHA, 32)]
         for y in range(height):
             for x in range(width):
-                textures_list.append(
-                    texture.subsurface((x * size[0], y * size[1], size[0], size[1])))
+                tile = texture.subsurface((x * size[0], y * size[1], size[0], size[1]))
+                textures_list.append(tile)
         return textures_list
 
     def render(self, screen: Surface):
@@ -145,12 +145,20 @@ class Map:
         cart_x, cart_y = to_cartesian(pos[0] * k_x - iso_ofx - 30, pos[1] * k_y - iso_ofy)
         return int(cart_x // TILE_SIZE), int(cart_y // TILE_SIZE)
 
+    def get_tile_id(self, coords):
+        for i in range(self.layers - 1, -1, -1):
+            tile_id = self.map[i][coords[1]][coords[0]]
+            if tile_id:
+                return tile_id
+        return 0
+
     # Действия при нажатии на клетки поля
     def click_listener(self, pos):
         # Нахождение координат клетки
         tile_pos = self.tile_pos(pos)
         # Нахождение id клетки
-        tile_id = self.map[2][tile_pos[1]][tile_pos[0]]
+        # tile_id = self.map[2][tile_pos[1]][tile_pos[0]]
+        tile_id = self.get_tile_id(tile_pos)
         self.tile_clicked(tile_pos, tile_id)
 
     @abstractmethod

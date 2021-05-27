@@ -5,6 +5,8 @@ from StartMenu import StartMenu
 from GuiElements import *
 
 pygame.init()
+pygame.display.set_icon(icon)
+pygame.display.set_caption('The long way')
 pygame.font.init()
 pygame.mixer.init()
 pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/sounds/wind.wav'), -1)
