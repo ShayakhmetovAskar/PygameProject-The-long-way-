@@ -1,6 +1,7 @@
 from random import choice
 from Constants import *
 import Constants
+from sys import exit
 from GuiElements import SmallButton, Button1, Text, Frame2, Frame1, Hint
 from MapBase import Map
 from Entity import *
@@ -345,7 +346,7 @@ class MainMap(Map):
         frame1.y += frame2.image.get_height() // 2
         frame2.y -= frame1.image.get_height() // 2
 
-        text_frame1_title = Text(text='Пауза', size=100)
+        text_frame1_title = Text(text='Пауза', size=90)
         text_frame1_title.align_center()
         text_frame1_title.y -= frame1.image.get_height() // 2
 
@@ -358,13 +359,13 @@ class MainMap(Map):
         button_continue.func = lambda: setattr(self, 'paused', False)
 
         button_exit = Button1()
-        button_exit.set_text('Выйти (прогресс будет утерян)', size=25)
+        button_exit.set_text('Выйти (прогресс будет утерян)', size=19)
         button_exit.align_center()
         button_exit.set_pos(
             button_exit.frame.x,
             frame1.y + frame1.image.get_height() * 9 // 10 - button_exit.frame.image.get_height() - button_exit.frame.image.get_height()
         )
-        button_exit.func = quit
+        button_exit.func = exit
         # Затемнение фона
         s = pygame.Surface(screen.get_size())
         s.set_alpha(128)

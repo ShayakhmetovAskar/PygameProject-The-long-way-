@@ -64,12 +64,12 @@ class InventoryHUD:
             margin * 2 + self.wood.get_width(), SCREEN_HEIGHT - self.frame.get_height() + margin))
         if self.wood_am != self.player.wood:
             self.wood_am = self.player.wood
-            self.wood_text = Text(str(self.player.wood), 35)
+            self.wood_text = Text(str(self.player.wood), 20)
             self.wood_text.x = margin + self.wood.get_width() // 8
             self.wood_text.y = SCREEN_HEIGHT - self.frame.get_height() + margin + self.wood.get_height() // 20
         if self.boat_parts_am != self.player.parts:
             self.boat_parts_am = self.player.parts
-            self.boat_parts_text = Text(f'{str(self.player.parts)}/9')
+            self.boat_parts_text = Text(f'{str(self.player.parts)}/9', 20)
             self.boat_parts_text.x = margin * 2 + self.wood.get_width() + self.boat_parts.get_width() // 8
             self.boat_parts_text.y = SCREEN_HEIGHT - self.frame.get_height() + margin + self.boat_parts.get_height() // 20
         self.wood_text.render(screen)
@@ -153,7 +153,7 @@ class Text(MenuObject):
         self.x = x
         self.y = y
         self.text = text
-        self.font = pygame.font.SysFont('', int(size * SCALE))
+        self.font = pygame.font.SysFont('Arial', int(size * SCALE))
         surface = self.font.render(self.text, True, (210, 125, 44))
         super().__init__(surface, x, y)
 
@@ -172,11 +172,11 @@ class Button1:
         self.image_pressed = images['ButtonPressed']
         self.image_hover = images['ButtonSelected']
         self.frame = MenuObject(self.image_def)
-        self.text = Text(text, size=50)
+        self.text = Text(text, size=45)
         self.pressed = False
         self.func = lambda: None
 
-    def set_text(self, text, size=50):
+    def set_text(self, text, size=45):
         self.text = Text(text=text, size=size)
         self.set_pos(self.frame.x, self.frame.y)
 
@@ -228,7 +228,7 @@ class Hint:
     def __init__(self):
         self.frame = pygame.Surface((0, 0))
         self.frame.set_alpha(128)
-        self.text = Text('')
+        self.text = Text('', 20)
 
     def set_text(self, text):
         self.text.set_text(text)

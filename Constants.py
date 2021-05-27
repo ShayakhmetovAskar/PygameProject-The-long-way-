@@ -1,15 +1,12 @@
 import os
 import sys
-
 import pygame
 
-pygame.init()
 # Размеры экрана
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 # SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 400
 
 SCALE = SCREEN_WIDTH / 1920
-pygame.quit()
 # Размер одной клетки в декартовой система
 TILE_SIZE = 32
 MAPS_DIR = 'data/maps'

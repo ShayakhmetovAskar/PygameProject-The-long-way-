@@ -146,11 +146,8 @@ class Map:
         return int(cart_x // TILE_SIZE), int(cart_y // TILE_SIZE)
 
     def get_tile_id(self, coords):
-        for i in range(self.layers - 1, -1, -1):
-            tile_id = self.map[i][coords[1]][coords[0]]
-            if tile_id:
-                return tile_id
-        return 0
+        tile_id = self.map[2][coords[1]][coords[0]]
+        return tile_id
 
     # Действия при нажатии на клетки поля
     def click_listener(self, pos):

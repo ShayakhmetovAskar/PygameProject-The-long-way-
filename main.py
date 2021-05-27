@@ -1,14 +1,19 @@
+import pygame
+
+# Нужно сначала сделать это
+pygame.init()
+pygame.font.init()
+pygame.mixer.init()
+
 from MainMap import MainMap
 from MapLoader import MapLoader
 import time
 from StartMenu import StartMenu
 from GuiElements import *
 
-pygame.init()
 pygame.display.set_icon(icon)
 pygame.display.set_caption('The long way')
-pygame.font.init()
-pygame.mixer.init()
+
 pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/sounds/wind.wav'), -1)
 pygame.mixer.Channel(1).play(pygame.mixer.Sound('data/sounds/fire.wav'), -1)
 pygame.mixer.Channel(2).play(pygame.mixer.Sound('data/sounds/step.wav'), -1)

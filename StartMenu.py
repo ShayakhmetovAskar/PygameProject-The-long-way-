@@ -37,7 +37,7 @@ class StartMenu:
         self.frame2.y -= self.frame1.image.get_height() // 2
 
         # Название игры
-        self.text_frame1_title = Text(text='The long way', size=100)
+        self.text_frame1_title = Text(text='The long way', size=90)
         self.text_frame1_title.align_center()
         self.text_frame1_title.y -= self.frame1.image.get_height() // 2
 

@@ -24,6 +24,7 @@ class TextWindow:
         self.button.func = self.close
 
         self.func = lambda: None  # Функция, которую можно привязать к кнопке закрытия
+        self.font = pygame.font.SysFont('Arial', int(self.size * SCALE))
 
     # Отрисовка
     def render(self, screen: pygame.Surface):
@@ -33,7 +34,7 @@ class TextWindow:
             self.frame.render(screen)
             self.button.render(screen)
             self.render_text(self.text, [self.frame.x, self.frame.y],
-                             pygame.font.Font(None, int(self.size * SCALE)), screen)
+                            self.font, screen)
 
     # Отрисовка многострочного текста
     def render_text(self, text, pos, font, screen, color=pygame.Color('grey')):
